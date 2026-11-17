@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: country
+  namespace: country-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: country
+  template:
+    metadata:
+      labels:
+        app: country
+    spec:
+      containers:
+      - name: country
+        image: subash0769/country-app:1.0
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
+          limits:
+            memory: "256Mi"
+            cpu: "700m"
+        ports:
+        - containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        
+        env:
+        - name: RESTCOUNTRIES_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: country-secret
+              key: RESTCOUNTRIES_API_KEY
