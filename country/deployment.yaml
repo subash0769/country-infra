@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: country
-        image: subash0769/country-app:1.0
+        image: subash0769/country-app:181aaca
         resources:
           requests:
             memory: "128Mi"
